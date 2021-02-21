@@ -26,17 +26,6 @@ class ProfilePage extends StatelessWidget {
           Navigator.pop(context);
         },
       ),
-      actions: <Widget>[
-        new IconButton(
-          icon: new Icon(
-            Icons.logout,
-            size: 30,
-          ),
-          onPressed: () {
-            Navigator.pushReplacementNamed(context, '/MyApp');
-          },
-        ),
-      ],
     );
   }
 }

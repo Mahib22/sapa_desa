@@ -3,9 +3,11 @@ import 'package:sapa_desa/theme.dart';
 
 class ButtonForm extends StatelessWidget {
   final String title;
+  final Function press;
 
   ButtonForm({
     this.title,
+    this.press,
   });
 
   @override
@@ -20,7 +22,7 @@ class ButtonForm extends StatelessWidget {
         style: TextStyle(color: Colors.white),
       ),
       color: kPrimaryColor,
-      onPressed: () {},
+      onPressed: press,
     );
   }
 }

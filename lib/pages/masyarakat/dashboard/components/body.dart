@@ -1,8 +1,23 @@
 import 'package:flutter/material.dart';
+import 'dart:async';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+
 import 'package:sapa_desa/pages/masyarakat/dashboard/components/header.dart';
 import 'package:sapa_desa/widgets/card_laporan.dart';
 
-class Body extends StatelessWidget {
+class Body extends StatefulWidget {
+  @override
+  _BodyState createState() => _BodyState();
+}
+
+class _BodyState extends State<Body> {
+  Future getLaporan() async {
+    final response =
+        await http.get("http://192.168.0.103/api_sapa_desa/getLaporan.php");
+    return json.decode(response.body);
+  }
+
   @override
   Widget build(BuildContext context) {
     // It will provie us total height  and width of our screen
