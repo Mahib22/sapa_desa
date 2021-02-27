@@ -76,7 +76,9 @@ class _DetailLaporanState extends State<DetailLaporan> {
                     horizontal: 10,
                     vertical: 20,
                   ),
-                  child: Image.asset("assets/images/banjir.jpg"),
+                  child: Image.network(
+                      'http://192.168.0.103/api_sapa_desa/uploads/' +
+                          '${widget.list[widget.index]['img']}'),
                 ),
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 10),

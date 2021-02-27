@@ -139,7 +139,7 @@ class MyDrawer extends StatelessWidget {
                   fit: BoxFit.cover),
             ),
             accountName: Text('Belajar Flutter'),
-            accountEmail: Text('test@gmail.com'),
+            accountEmail: Text('3200123456789'),
           ),
           DrawerItem(
             icon: Icons.add,

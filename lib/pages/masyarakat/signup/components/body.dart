@@ -65,7 +65,7 @@ class _BodyState extends State<Body> {
           ),
           entryAnimation: EntryAnimation.DEFAULT,
           onOkButtonPressed: () {
-            Navigator.push(
+            Navigator.pushReplacement(
               context,
               MaterialPageRoute(
                 builder: (context) {

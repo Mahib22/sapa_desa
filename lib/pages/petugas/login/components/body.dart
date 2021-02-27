@@ -1,15 +1,60 @@
 import 'package:flutter/material.dart';
-import 'package:sapa_desa/pages/admin/dashboard/dashboard.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:sapa_desa/pages/petugas/login/components/background.dart';
+import 'package:sapa_desa/theme.dart';
 import 'package:sapa_desa/widgets/rounded_button.dart';
-import 'package:sapa_desa/widgets/rounded_input_field.dart';
-import 'package:sapa_desa/widgets/rounded_password_field.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:sapa_desa/widgets/text_field_container.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
-class Body extends StatelessWidget {
-  const Body({
-    Key key,
-  }) : super(key: key);
+class Body extends StatefulWidget {
+  @override
+  _BodyState createState() => _BodyState();
+}
+
+class _BodyState extends State<Body> {
+  TextEditingController email = TextEditingController();
+  TextEditingController password = TextEditingController();
+
+  bool _isHidePassword = true;
+
+  void _togglePassword() {
+    setState(() {
+      _isHidePassword = !_isHidePassword;
+    });
+  }
+
+  Future login() async {
+    final response = await http.post(
+        "http://192.168.0.103/api_sapa_desa/loginPetugas.php",
+        body: {"email": email.text, "password": password.text});
+
+    var datauser = json.decode(response.body);
+
+    if (datauser.length == 0) {
+      Fluttertoast.showToast(
+        msg: "Email atau Password Salah",
+        fontSize: 16.0,
+      );
+    } else {
+      if (datauser[0]['level'] == 'Admin') {
+        Fluttertoast.showToast(
+          msg: "Login Berhasil",
+          fontSize: 16.0,
+        );
+
+        Navigator.pushReplacementNamed(context, '/AdminPage');
+      } else if (datauser[0]['level'] == 'Petugas') {
+        Fluttertoast.showToast(
+          msg: "Login Berhasil",
+          fontSize: 16.0,
+        );
+
+        Navigator.pushReplacementNamed(context, '/PetugasPage');
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,24 +77,63 @@ class Body extends StatelessWidget {
               height: size.height * 0.35,
             ),
             SizedBox(height: size.height * 0.03),
-            RoundedInputField(
-              keyboardType: TextInputType.emailAddress,
-              hintText: "E-Mail",
-              onChanged: (value) {},
-              icon: Icons.mail_outline,
+            TextFieldContainer(
+              child: TextFormField(
+                controller: email,
+                keyboardType: TextInputType.emailAddress,
+                onChanged: (value) {},
+                cursorColor: kPrimaryColor,
+                decoration: InputDecoration(
+                  icon: Icon(
+                    Icons.email_outlined,
+                    color: kPrimaryColor,
+                  ),
+                  hintText: "Email",
+                  border: InputBorder.none,
+                ),
+              ),
             ),
-            RoundedPasswordField(
-              onChanged: (value) {},
+            TextFieldContainer(
+              child: TextFormField(
+                controller: password,
+                obscureText: _isHidePassword,
+                onChanged: (value) {},
+                cursorColor: kPrimaryColor,
+                decoration: InputDecoration(
+                  hintText: "Password",
+                  icon: Icon(
+                    Icons.lock,
+                    color: kPrimaryColor,
+                  ),
+                  suffixIcon: GestureDetector(
+                    onTap: () {
+                      _togglePassword();
+                    },
+                    child: Icon(
+                      _isHidePassword ? Icons.visibility_off : Icons.visibility,
+                      color: _isHidePassword ? Colors.grey : Colors.purple,
+                    ),
+                  ),
+                  border: InputBorder.none,
+                ),
+              ),
             ),
             RoundedButton(
               text: "LOGIN",
               press: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => DashboardAdmin(),
-                  ),
-                );
+                if (email.text.isEmpty) {
+                  return Fluttertoast.showToast(
+                    msg: "Masukkan Email",
+                    fontSize: 16,
+                  );
+                } else if (password.text.isEmpty) {
+                  return Fluttertoast.showToast(
+                    msg: "Masukkan Password",
+                    fontSize: 16,
+                  );
+                } else {
+                  login();
+                }
               },
             ),
             SizedBox(height: size.height * 0.03),
