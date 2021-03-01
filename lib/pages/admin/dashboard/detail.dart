@@ -1,10 +1,12 @@
+import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:sapa_desa/pages/masyarakat/dashboard/dashboard.dart';
-import 'package:sapa_desa/pages/masyarakat/laporan/edit/edit_laporan.dart';
+import 'package:sapa_desa/pages/admin/dashboard/viewPdf.dart';
 import 'package:sapa_desa/theme.dart';
-import 'package:giffy_dialog/giffy_dialog.dart';
 import 'package:http/http.dart' as http;
+import 'package:path_provider/path_provider.dart';
+import 'package:pdf/pdf.dart';
+import 'package:pdf/widgets.dart' as pw;
 
 class DetailLaporan extends StatefulWidget {
   final List list;
@@ -19,10 +21,51 @@ class DetailLaporan extends StatefulWidget {
 }
 
 class _DetailLaporanState extends State<DetailLaporan> {
-  void deleteLaporan() {
-    var url = "http://192.168.0.103/api_sapa_desa/deleteLaporan.php";
+  void exportPDF(context) async {
+    var res =
+        await http.get("http://192.168.0.103/api_sapa_desa/getLaporan.php");
 
-    http.post(url, body: {'id': widget.list[widget.index]['id']});
+    List dataLaporan = jsonDecode(res.body);
+
+    final pw.Document pdf = pw.Document(deflate: zlib.encode);
+
+    pdf.addPage(
+      pw.MultiPage(
+        orientation: pw.PageOrientation.portrait,
+        build: (context) => [
+          pw.Table.fromTextArray(
+            context: context,
+            data: <List<String>>[
+              <String>["Judul", "Kategori", "Lokasi", "img", "Isi"],
+              ...dataLaporan.map(
+                (item) => [
+                  item["judul"],
+                  item["kategori"],
+                  item["lokasi"],
+                  item["img"],
+                  item["isi"],
+                ],
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+
+    final String dir = (await getExternalStorageDirectory()).path;
+    final String path = "$dir/Laporan_Pengaduan.pdf";
+    final File file = File(path);
+
+    print(path);
+    file.writeAsBytesSync(await pdf.save());
+
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => ViewPdf(
+          path: path,
+        ),
+      ),
+    );
   }
 
   @override
@@ -147,62 +190,13 @@ class _DetailLaporanState extends State<DetailLaporan> {
       ),
       actions: <Widget>[
         IconButton(
-          tooltip: 'Edit',
+          tooltip: 'Print',
           icon: Icon(
-            Icons.edit,
+            Icons.print,
             size: 30,
           ),
           onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => EditLaporan(
-                  list: widget.list,
-                  index: widget.index,
-                ),
-              ),
-            );
-          },
-        ),
-        IconButton(
-          tooltip: 'Hapus',
-          icon: Icon(
-            Icons.delete,
-            size: 30,
-          ),
-          onPressed: () {
-            showDialog(
-              context: context,
-              builder: (_) => AssetGiffyDialog(
-                image: Image.asset('assets/images/gifchat.gif'),
-                title: Text(
-                  'Hapus Laporan',
-                  style: TextStyle(fontSize: 22.0, fontWeight: FontWeight.w600),
-                ),
-                description: Text(
-                  "Apakah Anda yakin ingin menghapus ${widget.list[widget.index]['judul']} ?",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 16,
-                  ),
-                ),
-                entryAnimation: EntryAnimation.TOP,
-                onOkButtonPressed: () {
-                  deleteLaporan();
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => DashboardMasyarakat(),
-                    ),
-                  );
-                  return Fluttertoast.showToast(
-                    msg: 'Laporan Berhasil Dihapus',
-                    textColor: Colors.white,
-                    backgroundColor: kPrimaryColor,
-                  );
-                },
-              ),
-            );
+            exportPDF(context);
           },
         ),
       ],
