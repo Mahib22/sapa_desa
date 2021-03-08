@@ -5,14 +5,14 @@ import 'dart:convert';
 
 import 'package:sapa_desa/pages/masyarakat/laporan/create/create_laporan.dart';
 import 'package:sapa_desa/pages/masyarakat/laporan/detail/detail_laporan.dart';
-import 'package:sapa_desa/pages/masyarakat/profile/profile_screen.dart';
 import 'package:sapa_desa/theme.dart';
 import 'package:sapa_desa/main.dart';
 import 'package:sapa_desa/widgets/drawer_item.dart';
 
 class DashboardMasyarakat extends StatefulWidget {
   final String nama;
-  DashboardMasyarakat({this.nama});
+  final String nik;
+  DashboardMasyarakat({this.nama, this.nik});
 
   @override
   _DashboardMasyarakatState createState() => _DashboardMasyarakatState();
@@ -133,13 +133,24 @@ class MyDrawer extends StatelessWidget {
         padding: EdgeInsets.zero,
         children: [
           UserAccountsDrawerHeader(
-            currentAccountPicture: ClipOval(
-              child: Image(
-                  image: AssetImage('assets/images/people.png'),
-                  fit: BoxFit.cover),
+            // currentAccountPicture: ClipOval(
+            //   child: Image(
+            //       image: AssetImage('assets/images/people.png'),
+            //       fit: BoxFit.cover),
+            // ),
+            accountName: Text(
+              '$nama',
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.w500,
+              ),
             ),
-            accountName: Text('Belajar Flutter'),
-            accountEmail: Text('3200123456789'),
+            accountEmail: Text(
+              '$nik',
+              style: TextStyle(
+                fontSize: 16,
+              ),
+            ),
           ),
           DrawerItem(
             icon: Icons.add,
@@ -149,18 +160,6 @@ class MyDrawer extends StatelessWidget {
                 context,
                 MaterialPageRoute(
                   builder: (context) => CreateLaporan(),
-                ),
-              );
-            },
-          ),
-          DrawerItem(
-            icon: Icons.person,
-            text: 'Profile',
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => ProfilePage(nama: nama),
                 ),
               );
             },

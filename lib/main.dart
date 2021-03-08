@@ -10,6 +10,8 @@ void main() {
 }
 
 String nama = '';
+String nik = '';
+String mail = '';
 
 class MyApp extends StatelessWidget {
   @override
@@ -24,10 +26,12 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       routes: <String, WidgetBuilder>{
         '/MasyarakatPage': (BuildContext context) =>
-            new DashboardMasyarakat(nama: nama),
+            new DashboardMasyarakat(nama: nama, nik: nik),
         '/MyApp': (BuildContext context) => new MyApp(),
-        '/AdminPage': (BuildContext context) => new DashboardAdmin(),
-        '/PetugasPage': (BuildContext context) => new DashboardPetugas(),
+        '/AdminPage': (BuildContext context) =>
+            new DashboardAdmin(nama: nama, mail: mail),
+        '/PetugasPage': (BuildContext context) =>
+            new DashboardPetugas(nama: nama, mail: mail),
       },
     );
   }

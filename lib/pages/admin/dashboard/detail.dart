@@ -1,12 +1,5 @@
-import 'dart:convert';
-import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:sapa_desa/pages/admin/dashboard/viewPdf.dart';
 import 'package:sapa_desa/theme.dart';
-import 'package:http/http.dart' as http;
-import 'package:path_provider/path_provider.dart';
-import 'package:pdf/pdf.dart';
-import 'package:pdf/widgets.dart' as pw;
 
 class DetailLaporan extends StatefulWidget {
   final List list;
@@ -21,53 +14,6 @@ class DetailLaporan extends StatefulWidget {
 }
 
 class _DetailLaporanState extends State<DetailLaporan> {
-  void exportPDF(context) async {
-    var res =
-        await http.get("http://192.168.0.103/api_sapa_desa/getLaporan.php");
-
-    List dataLaporan = jsonDecode(res.body);
-
-    final pw.Document pdf = pw.Document(deflate: zlib.encode);
-
-    pdf.addPage(
-      pw.MultiPage(
-        orientation: pw.PageOrientation.portrait,
-        build: (context) => [
-          pw.Table.fromTextArray(
-            context: context,
-            data: <List<String>>[
-              <String>["Judul", "Kategori", "Lokasi", "img", "Isi"],
-              ...dataLaporan.map(
-                (item) => [
-                  item["judul"],
-                  item["kategori"],
-                  item["lokasi"],
-                  item["img"],
-                  item["isi"],
-                ],
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-
-    final String dir = (await getExternalStorageDirectory()).path;
-    final String path = "$dir/Laporan_Pengaduan.pdf";
-    final File file = File(path);
-
-    print(path);
-    file.writeAsBytesSync(await pdf.save());
-
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => ViewPdf(
-          path: path,
-        ),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -188,18 +134,6 @@ class _DetailLaporanState extends State<DetailLaporan> {
           Navigator.pop(context);
         },
       ),
-      actions: <Widget>[
-        IconButton(
-          tooltip: 'Print',
-          icon: Icon(
-            Icons.print,
-            size: 30,
-          ),
-          onPressed: () {
-            exportPDF(context);
-          },
-        ),
-      ],
     );
   }
 }

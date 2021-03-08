@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sapa_desa/main.dart';
 import 'package:sapa_desa/pages/petugas/dashboard/detail.dart';
 import 'package:sapa_desa/theme.dart';
 import 'package:sapa_desa/widgets/drawer_item.dart';
@@ -7,6 +8,10 @@ import 'dart:async';
 import 'dart:convert';
 
 class DashboardPetugas extends StatefulWidget {
+  final String nama;
+  final String mail;
+  DashboardPetugas({this.nama, this.mail});
+
   @override
   _DashboardPetugasState createState() => _DashboardPetugasState();
 }
@@ -126,13 +131,24 @@ class MyDrawer extends StatelessWidget {
         padding: EdgeInsets.zero,
         children: [
           UserAccountsDrawerHeader(
-            currentAccountPicture: ClipOval(
-              child: Image(
-                  image: AssetImage('assets/images/people.png'),
-                  fit: BoxFit.cover),
+            // currentAccountPicture: ClipOval(
+            //   child: Image(
+            //       image: AssetImage('assets/images/people.png'),
+            //       fit: BoxFit.cover),
+            // ),
+            accountName: Text(
+              '$nama',
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.w500,
+              ),
             ),
-            accountName: Text('Belajar Flutter'),
-            accountEmail: Text('test@gmail.com'),
+            accountEmail: Text(
+              '$mail',
+              style: TextStyle(
+                fontSize: 16,
+              ),
+            ),
           ),
           DrawerItem(
             icon: Icons.logout,

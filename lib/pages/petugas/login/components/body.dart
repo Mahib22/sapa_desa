@@ -7,6 +7,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:sapa_desa/widgets/text_field_container.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:sapa_desa/main.dart';
 
 class Body extends StatefulWidget {
   @override
@@ -45,6 +46,10 @@ class _BodyState extends State<Body> {
         );
 
         Navigator.pushReplacementNamed(context, '/AdminPage');
+        setState(() {
+          nama = datauser[0]['nama'];
+          mail = datauser[0]['email'];
+        });
       } else if (datauser[0]['level'] == 'Petugas') {
         Fluttertoast.showToast(
           msg: "Login Berhasil",
@@ -52,6 +57,10 @@ class _BodyState extends State<Body> {
         );
 
         Navigator.pushReplacementNamed(context, '/PetugasPage');
+        setState(() {
+          nama = datauser[0]['nama'];
+          mail = datauser[0]['email'];
+        });
       }
     }
   }

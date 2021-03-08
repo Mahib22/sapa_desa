@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sapa_desa/main.dart';
 import 'package:sapa_desa/pages/admin/add_petugas/add_petugas.dart';
 import 'package:sapa_desa/pages/admin/dashboard/detail.dart';
 import 'package:sapa_desa/theme.dart';
@@ -6,8 +7,17 @@ import 'package:sapa_desa/widgets/drawer_item.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
+import 'package:sapa_desa/pages/admin/dashboard/viewPdf.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:pdf/pdf.dart';
+import 'package:pdf/widgets.dart' as pw;
 
 class DashboardAdmin extends StatefulWidget {
+  final String nama;
+  final String mail;
+  DashboardAdmin({this.nama, this.mail});
+
   @override
   _DashboardAdminState createState() => _DashboardAdminState();
 }
@@ -19,6 +29,52 @@ class _DashboardAdminState extends State<DashboardAdmin> {
     return json.decode(response.body);
   }
 
+  void exportPDF(context) async {
+    var res =
+        await http.get("http://192.168.0.103/api_sapa_desa/getLaporan.php");
+
+    List dataLaporan = jsonDecode(res.body);
+
+    final pw.Document pdf = pw.Document(deflate: zlib.encode);
+
+    pdf.addPage(
+      pw.MultiPage(
+        orientation: pw.PageOrientation.portrait,
+        build: (context) => [
+          pw.Table.fromTextArray(
+            context: context,
+            data: <List<String>>[
+              <String>["Judul", "Kategori", "Lokasi", "Isi"],
+              ...dataLaporan.map(
+                (item) => [
+                  item["judul"],
+                  item["kategori"],
+                  item["lokasi"],
+                  item["isi"],
+                ],
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+
+    final String dir = (await getExternalStorageDirectory()).path;
+    final String path = "$dir/Laporan_Pengaduan.pdf";
+    final File file = File(path);
+
+    print(path);
+    file.writeAsBytesSync(await pdf.save());
+
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => ViewPdf(
+          path: path,
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,6 +83,18 @@ class _DashboardAdminState extends State<DashboardAdmin> {
         title: Text(
           'Daftar Laporan',
         ),
+        actions: <Widget>[
+          IconButton(
+            tooltip: 'Print',
+            icon: Icon(
+              Icons.print,
+              size: 30,
+            ),
+            onPressed: () {
+              exportPDF(context);
+            },
+          ),
+        ],
       ),
       body: FutureBuilder<List>(
         future: getLaporan(),
@@ -127,13 +195,24 @@ class MyDrawer extends StatelessWidget {
         padding: EdgeInsets.zero,
         children: [
           UserAccountsDrawerHeader(
-            currentAccountPicture: ClipOval(
-              child: Image(
-                  image: AssetImage('assets/images/people.png'),
-                  fit: BoxFit.cover),
+            // currentAccountPicture: ClipOval(
+            //   child: Image(
+            //       image: AssetImage('assets/images/people.png'),
+            //       fit: BoxFit.cover),
+            // ),
+            accountName: Text(
+              '$nama',
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.w500,
+              ),
             ),
-            accountName: Text('Belajar Flutter'),
-            accountEmail: Text('test@gmail.com'),
+            accountEmail: Text(
+              '$mail',
+              style: TextStyle(
+                fontSize: 16,
+              ),
+            ),
           ),
           DrawerItem(
             icon: Icons.add,

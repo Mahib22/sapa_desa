@@ -51,6 +51,7 @@ class _BodyState extends State<Body> {
 
       setState(() {
         nama = datauser[0]['nama'];
+        nik = datauser[0]['nik'];
       });
     }
   }
