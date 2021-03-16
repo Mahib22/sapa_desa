@@ -91,7 +91,7 @@ class _EditLaporanState extends State<EditLaporan> {
     // ignore: deprecated_member_use
     var stream = http.ByteStream(DelegatingStream.typed(imageFile.openRead()));
     var length = await imageFile.length();
-    var uri = Uri.parse("http://192.168.0.103/api_sapa_desa/editLaporan.php");
+    var uri = Uri.parse("https://sapadesa.nasihosting.com/editLaporan.php");
     var request = http.MultipartRequest("POST", uri);
 
     var multipartFile = http.MultipartFile('img', stream, length,
@@ -237,7 +237,7 @@ class _EditLaporanState extends State<EditLaporan> {
                 Center(
                   child: _image == null
                       ? Image.network(
-                          'http://192.168.0.103/api_sapa_desa/uploads/' +
+                          'https://sapadesa.nasihosting.com/uploads/' +
                               '${widget.list[widget.index]['img']}')
                       : Image.file(_image),
                 ),

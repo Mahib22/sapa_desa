@@ -28,7 +28,7 @@ class _BodyState extends State<Body> {
   }
 
   Future register() async {
-    var url = "http://192.168.0.103/api_sapa_desa/addPetugas.php";
+    var url = "https://sapadesa.nasihosting.com/addPetugas.php";
 
     var response = await http.post(url, body: {
       "nama": nama.text,

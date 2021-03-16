@@ -19,7 +19,7 @@ class DashboardPetugas extends StatefulWidget {
 class _DashboardPetugasState extends State<DashboardPetugas> {
   Future<List> getLaporan() async {
     final response =
-        await http.get("http://192.168.0.103/api_sapa_desa/getLaporan.php");
+        await http.get("https://sapadesa.nasihosting.com/getLaporan.php");
     return json.decode(response.body);
   }
 

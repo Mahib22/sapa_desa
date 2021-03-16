@@ -38,7 +38,7 @@ class _BodyState extends State<Body> {
 
   save() async {
     final response = await http.post(
-        "http://192.168.0.103/api_sapa_desa/register.php",
+        "https://sapadesa.nasihosting.com/register.php",
         body: {"nik": nik, "nama": nama, "telp": telp, "password": password});
     final data = jsonDecode(response.body);
     int value = data['value'];

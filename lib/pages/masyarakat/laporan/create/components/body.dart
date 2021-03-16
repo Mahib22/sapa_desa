@@ -83,7 +83,7 @@ class _BodyState extends State<Body> {
     // ignore: deprecated_member_use
     var stream = http.ByteStream(DelegatingStream.typed(imageFile.openRead()));
     var length = await imageFile.length();
-    var uri = Uri.parse("http://192.168.0.103/api_sapa_desa/addLaporan.php");
+    var uri = Uri.parse("https://sapadesa.nasihosting.com/addLaporan.php");
     var request = http.MultipartRequest("POST", uri);
 
     var multipartFile = http.MultipartFile('img', stream, length,

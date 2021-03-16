@@ -25,13 +25,12 @@ class DashboardAdmin extends StatefulWidget {
 class _DashboardAdminState extends State<DashboardAdmin> {
   Future<List> getLaporan() async {
     final response =
-        await http.get("http://192.168.0.103/api_sapa_desa/getLaporan.php");
+        await http.get("https://sapadesa.nasihosting.com/getLaporan.php");
     return json.decode(response.body);
   }
 
   void exportPDF(context) async {
-    var res =
-        await http.get("http://192.168.0.103/api_sapa_desa/getLaporan.php");
+    var res = await http.get("https://sapadesa.nasihosting.com/getLaporan.php");
 
     List dataLaporan = jsonDecode(res.body);
 

@@ -66,7 +66,7 @@ class _DetailLaporanState extends State<DetailLaporan> {
                     vertical: 20,
                   ),
                   child: Image.network(
-                      'http://192.168.0.103/api_sapa_desa/uploads/' +
+                      'https://sapadesa.nasihosting.com/uploads/' +
                           '${widget.list[widget.index]['img']}'),
                 ),
                 Padding(
