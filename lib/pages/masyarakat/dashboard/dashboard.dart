@@ -34,7 +34,7 @@ class _DashboardMasyarakatState extends State<DashboardMasyarakat> {
           'Daftar Laporan',
         ),
       ),
-      drawer: MyDrawer(),
+      drawer: theDrawer(),
       body: FutureBuilder<List>(
         future: getLaporan(),
         builder: (context, snapshot) {
@@ -46,6 +46,55 @@ class _DashboardMasyarakatState extends State<DashboardMasyarakat> {
                   child: CircularProgressIndicator(),
                 );
         },
+      ),
+    );
+  }
+
+  Widget theDrawer() {
+    return Drawer(
+      child: ListView(
+        padding: EdgeInsets.zero,
+        children: [
+          UserAccountsDrawerHeader(
+            // currentAccountPicture: ClipOval(
+            //   child: Image(
+            //       image: AssetImage('assets/images/people.png'),
+            //       fit: BoxFit.cover),
+            // ),
+            accountName: Text(
+              '$nama',
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            accountEmail: Text(
+              '$nik',
+              style: TextStyle(
+                fontSize: 16,
+              ),
+            ),
+          ),
+          DrawerItem(
+            icon: Icons.add,
+            text: 'Buat Laporan',
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => CreateLaporan(getLaporan),
+                ),
+              );
+            },
+          ),
+          DrawerItem(
+            icon: Icons.logout,
+            text: 'Logout',
+            onTap: () {
+              Navigator.pushReplacementNamed(context, '/MyApp');
+            },
+          ),
+        ],
       ),
     );
   }
@@ -91,11 +140,17 @@ class ListLaporan extends StatelessWidget {
                           );
                         },
                         child: ListTile(
-                          leading: Icon(
-                            Icons.check_circle,
-                            size: 50,
-                            color: Colors.black,
-                          ),
+                          leading: list[i]['tanggapan'] == null
+                              ? Icon(
+                                  Icons.watch_later_outlined,
+                                  size: 50,
+                                  color: Colors.black,
+                                )
+                              : Icon(
+                                  Icons.check_circle,
+                                  size: 50,
+                                  color: Colors.black,
+                                ),
                           title: Text(
                             list[i]['judul'],
                             style: TextStyle(
@@ -121,58 +176,6 @@ class ListLaporan extends StatelessWidget {
           ),
         );
       },
-    );
-  }
-}
-
-class MyDrawer extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Drawer(
-      child: ListView(
-        padding: EdgeInsets.zero,
-        children: [
-          UserAccountsDrawerHeader(
-            // currentAccountPicture: ClipOval(
-            //   child: Image(
-            //       image: AssetImage('assets/images/people.png'),
-            //       fit: BoxFit.cover),
-            // ),
-            accountName: Text(
-              '$nama',
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-            accountEmail: Text(
-              '$nik',
-              style: TextStyle(
-                fontSize: 16,
-              ),
-            ),
-          ),
-          DrawerItem(
-            icon: Icons.add,
-            text: 'Buat Laporan',
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => CreateLaporan(),
-                ),
-              );
-            },
-          ),
-          DrawerItem(
-            icon: Icons.logout,
-            text: 'Logout',
-            onTap: () {
-              Navigator.pushReplacementNamed(context, '/MyApp');
-            },
-          ),
-        ],
-      ),
     );
   }
 }

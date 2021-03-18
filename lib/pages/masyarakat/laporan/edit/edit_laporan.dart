@@ -15,8 +15,10 @@ import 'package:path/path.dart';
 class EditLaporan extends StatefulWidget {
   final List list;
   final int index;
+  final VoidCallback reload;
 
-  EditLaporan({
+  EditLaporan(
+    this.reload, {
     this.list,
     this.index,
   });
@@ -106,11 +108,20 @@ class _EditLaporanState extends State<EditLaporan> {
 
     var response = await request.send();
     if (response.statusCode == 200) {
-      return Fluttertoast.showToast(
-        msg: 'Laporan Berhasil Diedit',
-        textColor: Colors.white,
-        backgroundColor: kPrimaryColor,
-      );
+      setState(() {
+        Fluttertoast.showToast(
+          msg: 'Laporan Berhasil Diedit',
+          textColor: Colors.white,
+          backgroundColor: kPrimaryColor,
+        );
+        widget.reload();
+        Navigator.pushReplacement(
+          this.context,
+          MaterialPageRoute(
+            builder: (context) => DashboardMasyarakat(),
+          ),
+        );
+      });
     } else {
       return Fluttertoast.showToast(
         msg: 'Laporan Gagal Diedit',
@@ -263,13 +274,13 @@ class _EditLaporanState extends State<EditLaporan> {
                   title: 'Edit Laporan',
                   press: () {
                     if (_formKey.currentState.validate()) {
-                      editLaporan(_image);
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => DashboardMasyarakat(),
-                        ),
-                      );
+                      if (_image == null) {
+                        Fluttertoast.showToast(
+                          msg: 'Harap Lampirkan Foto',
+                        );
+                      } else {
+                        editLaporan(_image);
+                      }
                     }
                   },
                 ),

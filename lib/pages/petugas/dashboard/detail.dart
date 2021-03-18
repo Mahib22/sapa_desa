@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:sapa_desa/pages/petugas/dashboard/dashboard.dart';
 import 'package:sapa_desa/theme.dart';
 import 'package:http/http.dart' as http;
 
 class DetailLaporan extends StatefulWidget {
   final List list;
   final int index;
-  DetailLaporan({
+  final VoidCallback reload;
+
+  DetailLaporan(
+    this.reload, {
     this.index,
     this.list,
   });
@@ -154,11 +158,19 @@ class _DetailLaporanState extends State<DetailLaporan> {
                                 msg: 'Tanggapan Harus Diisi',
                               );
                             } else {
-                              addTanggapan();
-                              Fluttertoast.showToast(
-                                msg: 'Tanggapan Berhasil Dikirim',
-                              );
-                              Navigator.pop(context);
+                              setState(() {
+                                addTanggapan();
+                                Fluttertoast.showToast(
+                                  msg: 'Tanggapan Berhasil Dikirim',
+                                );
+                                widget.reload();
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => DashboardPetugas(),
+                                  ),
+                                );
+                              });
                             }
                           },
                           shape: RoundedRectangleBorder(

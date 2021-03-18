@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:sapa_desa/pages/masyarakat/laporan/detail/detail_laporan.dart';
-import 'package:sapa_desa/pages/masyarakat/laporan/edit/edit_laporan.dart';
 import 'package:sapa_desa/theme.dart';
 
 class CardLaporan extends StatelessWidget {
@@ -29,14 +27,7 @@ class CardLaporan extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => DetailLaporan(),
-                  ),
-                );
-              },
+              onTap: () {},
               child: ListTile(
                 leading: Icon(
                   icon,
@@ -69,14 +60,7 @@ class CardLaporan extends StatelessWidget {
                         color: Colors.black,
                       ),
                     ),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => EditLaporan(),
-                        ),
-                      );
-                    },
+                    onPressed: () {},
                   ),
                   FlatButton(
                     child: const Text(

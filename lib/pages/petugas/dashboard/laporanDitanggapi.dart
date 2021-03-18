@@ -1,78 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:sapa_desa/main.dart';
-import 'package:sapa_desa/pages/admin/add_petugas/add_petugas.dart';
 import 'package:sapa_desa/pages/admin/dashboard/detail.dart';
 import 'package:sapa_desa/theme.dart';
-import 'package:sapa_desa/widgets/drawer_item.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
-import 'package:sapa_desa/pages/admin/dashboard/viewPdf.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:pdf/pdf.dart';
-import 'package:pdf/widgets.dart' as pw;
 
-class DashboardAdmin extends StatefulWidget {
-  final String nama;
-  final String mail;
-  DashboardAdmin({this.nama, this.mail});
-
+class LaporanDitanggapi extends StatefulWidget {
   @override
-  _DashboardAdminState createState() => _DashboardAdminState();
+  _LaporanDitanggapiState createState() => _LaporanDitanggapiState();
 }
 
-class _DashboardAdminState extends State<DashboardAdmin> {
+class _LaporanDitanggapiState extends State<LaporanDitanggapi> {
   Future<List> getLaporan() async {
     final response = await http
         .get("https://sapadesa.nasihosting.com/laporanDitanggapi.php");
     return json.decode(response.body);
-  }
-
-  void exportPDF(context) async {
-    var res = await http
-        .get("https://sapadesa.nasihosting.com/laporanDitanggapi.php");
-
-    List dataLaporan = jsonDecode(res.body);
-
-    final pw.Document pdf = pw.Document(deflate: zlib.encode);
-
-    pdf.addPage(
-      pw.MultiPage(
-        orientation: pw.PageOrientation.portrait,
-        build: (context) => [
-          pw.Table.fromTextArray(
-            context: context,
-            data: <List<String>>[
-              <String>["Judul", "Kategori", "Lokasi", "Isi"],
-              ...dataLaporan.map(
-                (item) => [
-                  item["judul"],
-                  item["kategori"],
-                  item["lokasi"],
-                  item["isi"],
-                ],
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-
-    final String dir = (await getExternalStorageDirectory()).path;
-    final String path = "$dir/Laporan_Pengaduan.pdf";
-    final File file = File(path);
-
-    print(path);
-    file.writeAsBytesSync(await pdf.save());
-
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => ViewPdf(
-          path: path,
-        ),
-      ),
-    );
   }
 
   @override
@@ -81,20 +23,17 @@ class _DashboardAdminState extends State<DashboardAdmin> {
       appBar: AppBar(
         elevation: 0,
         title: Text(
-          'Daftar Laporan',
+          'Laporan Ditanggapi',
         ),
-        actions: <Widget>[
-          IconButton(
-            tooltip: 'Print',
-            icon: Icon(
-              Icons.print,
-              size: 30,
-            ),
-            onPressed: () {
-              exportPDF(context);
-            },
+        leading: IconButton(
+          icon: Icon(
+            Icons.arrow_back_ios_outlined,
+            size: 30,
           ),
-        ],
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
       ),
       body: FutureBuilder<List>(
         future: getLaporan(),
@@ -108,7 +47,6 @@ class _DashboardAdminState extends State<DashboardAdmin> {
                 );
         },
       ),
-      drawer: MyDrawer(),
     );
   }
 }
@@ -183,58 +121,6 @@ class ListLaporan extends StatelessWidget {
           ),
         );
       },
-    );
-  }
-}
-
-class MyDrawer extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Drawer(
-      child: ListView(
-        padding: EdgeInsets.zero,
-        children: [
-          UserAccountsDrawerHeader(
-            // currentAccountPicture: ClipOval(
-            //   child: Image(
-            //       image: AssetImage('assets/images/people.png'),
-            //       fit: BoxFit.cover),
-            // ),
-            accountName: Text(
-              '$nama',
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-            accountEmail: Text(
-              '$mail',
-              style: TextStyle(
-                fontSize: 16,
-              ),
-            ),
-          ),
-          DrawerItem(
-            icon: Icons.add,
-            text: 'Tambah Petugas',
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => AddPetugas(),
-                ),
-              );
-            },
-          ),
-          DrawerItem(
-            icon: Icons.logout,
-            text: 'Logout',
-            onTap: () {
-              Navigator.pushReplacementNamed(context, '/MyApp');
-            },
-          ),
-        ],
-      ),
     );
   }
 }

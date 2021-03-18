@@ -5,6 +5,8 @@ import 'package:sapa_desa/pages/masyarakat/laporan/edit/edit_laporan.dart';
 import 'package:sapa_desa/theme.dart';
 import 'package:giffy_dialog/giffy_dialog.dart';
 import 'package:http/http.dart' as http;
+import 'dart:async';
+import 'dart:convert';
 
 class DetailLaporan extends StatefulWidget {
   final List list;
@@ -19,6 +21,12 @@ class DetailLaporan extends StatefulWidget {
 }
 
 class _DetailLaporanState extends State<DetailLaporan> {
+  Future<List> getLaporan() async {
+    final response =
+        await http.get("https://sapadesa.nasihosting.com/getLaporan.php");
+    return json.decode(response.body);
+  }
+
   void deleteLaporan() {
     var url = "https://sapadesa.nasihosting.com/deleteLaporan.php";
 
@@ -157,6 +165,7 @@ class _DetailLaporanState extends State<DetailLaporan> {
               context,
               MaterialPageRoute(
                 builder: (context) => EditLaporan(
+                  getLaporan,
                   list: widget.list,
                   index: widget.index,
                 ),
